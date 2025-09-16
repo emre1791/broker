@@ -1,0 +1,2 @@
+export const MESSAGE_REPLY_TYPE = 'SYSTEM_MESSAGE_REPLY';
+export const INVOKE_TIMEOUT = 30_000; // 30s

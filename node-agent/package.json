@@ -1,0 +1,31 @@
+{
+  "name": "rbx-broker-node-agent",
+  "version": "0.1.0",
+  "description": "Node.js client agent for interacting with broker-daemon (login, poll, push messages) with duplicate suppression.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "keywords": [
+    "broker",
+    "agent",
+    "client",
+    "pubsub"
+  ],
+  "author": "",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "axios": "^1.12.2",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.8"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "sideEffects": false
+}
