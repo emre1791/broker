@@ -1,7 +1,7 @@
 import z from 'zod';
 import { createSessionProcedure } from '../types/Procedure';
 import { IncompleteMessage, Message, MessageReply } from '../types/Message';
-import { messages, sessions } from '../registry/registry';
+import { messageById, messages, sessions } from '../registry/registry';
 import { v4 } from 'uuid';
 import { MESSAGE_REPLY_TYPE, MESSAGE_TIMEOUT } from '../consts';
 
@@ -21,14 +21,17 @@ export const MessagesPush = createSessionProcedure(
     // add new messages
     for (const incompleteMessage of input.messages) {
       const message: Message = {
+        id: v4(),
         ...incompleteMessage,
         senderShortId: session.shortId,
-        id: v4(),
         timeout: MESSAGE_TIMEOUT + Date.now(),
         room: session.room,
       };
-      messages.push(message);
-      newMessages.push(message);
+      if (!messageById.has(message.id)) {
+        messages.push(message);
+        messageById.set(message.id, message);
+        newMessages.push(message);
+      }
     }
     for (const session of sessions) {
       session.addMessages(newMessages);
@@ -36,7 +39,7 @@ export const MessagesPush = createSessionProcedure(
 
     // add new reply messages
     for (const reply of input.replies) {
-      const originalMessage = messages.find((m) => m.id === reply.messageId);
+      const originalMessage = messageById.get(reply.messageId);
       if (originalMessage === undefined) {
         continue;
       }

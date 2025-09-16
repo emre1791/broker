@@ -1,5 +1,5 @@
 import { SESSION_TIMEOUT_CHECK_INTERVAL } from '../consts';
-import { messages, sessionById, sessions } from './registry';
+import { messageById, messages, sessionById, sessions } from './registry';
 
 function checkExpirations() {
   const now = Date.now();
@@ -22,6 +22,7 @@ function checkExpirations() {
     const message = messages[i];
     if (message.timeout < now) {
       messages.splice(i, 1);
+      messageById.delete(message.id);
       i--;
     }
   }
