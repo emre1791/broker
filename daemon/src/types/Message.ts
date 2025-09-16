@@ -10,7 +10,7 @@ export type Message = z.infer<typeof IncompleteMessage> & {
 };
 
 export const IncompleteMessage = z.object({
-  platform: Platform,
+  platforms: z.array(Platform),
   content: z.string(),
 });
 

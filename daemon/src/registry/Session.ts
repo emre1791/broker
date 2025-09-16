@@ -90,13 +90,13 @@ export class Session {
   }
 
   canReceive(message: Message): boolean {
-    if (!this.platforms.includes(message.platform)) {
-      return false;
-    }
     if (this.room !== message.room) {
       return false;
     }
     if (this.shortId === message.senderShortId) {
+      return false;
+    }
+    if (!hasOverlappingPlatform(this.platforms, message.platforms)) {
       return false;
     }
     if (this.unreadMessages.find((m) => m.id === message.id)) {
@@ -139,4 +139,13 @@ export class Session {
 
 function filterTimeout(message: Message): boolean {
   return message.timeout > Date.now();
+}
+
+function hasOverlappingPlatform(a: Platform[], b: Platform[]): boolean {
+  for (const platform of a) {
+    if (b.includes(platform)) {
+      return true;
+    }
+  }
+  return false;
 }
