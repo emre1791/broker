@@ -2,10 +2,12 @@ import { createServer } from 'node:http';
 import { Config } from '../types/Config';
 import { createHttpApp } from './createHttpApp';
 import { listenExpirations } from '../registry/listenExpirations';
+import { createWsApp } from './createWsApp';
 
 export function createBroker(config: Config) {
   const app = createHttpApp(config);
   const server = createServer(app);
+  const io = createWsApp(server);
 
   server.listen(config.PORT, () => {
     if (!config.NO_STARTUP_MESSAGE) {
@@ -15,9 +17,10 @@ export function createBroker(config: Config) {
 
   const unlistenExpirations = listenExpirations();
   const destroy = () => {
+    io.close();
     server.close();
     unlistenExpirations();
   };
 
-  return { app, server, unlistenExpirations, destroy };
+  return { app, server, io, unlistenExpirations, destroy };
 }

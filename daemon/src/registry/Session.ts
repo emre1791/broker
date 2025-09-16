@@ -3,6 +3,7 @@ import { Message } from '../types/Message';
 import { Platform } from '../types/Platform';
 import { SESSION_TIMEOUT } from '../consts';
 import { sessionById, sessions } from './registry';
+import { Socket } from 'socket.io';
 
 interface MessageCallback {
   callback: (messages: Message[]) => void;
@@ -16,7 +17,7 @@ export class Session {
   private timeout = Date.now() + SESSION_TIMEOUT;
   private unreadMessages: Message[] = [];
   private messageCallbacks: MessageCallback[] = [];
-  private expireCallbacks: (() => void)[] = [];
+  private socket: Socket | null = null;
 
   constructor(public readonly platforms: Platform[], public readonly room: string | undefined) {
     sessions.push(this);
@@ -113,27 +114,22 @@ export class Session {
   }
 
   isTimedOut(): boolean {
-    return Date.now() > this.timeout;
+    return Date.now() > this.timeout && (this.socket === null || !this.socket.connected);
   }
 
   expire() {
     this.timeout = 0;
-    for (const callback of this.expireCallbacks) {
-      callback();
+    if (this.socket) {
+      this.socket.disconnect(true);
+      this.socket = null;
     }
   }
 
-  addExpireCallback(callback: () => void) {
-    this.expireCallbacks.push(callback);
-  }
-
-  removeExpireCallback(callback: () => void) {
-    for (let i = 0; i < this.expireCallbacks.length; i++) {
-      if (this.expireCallbacks[i] === callback) {
-        this.expireCallbacks.splice(i, 1);
-        break;
-      }
+  setSocket(socket: Socket | null) {
+    if (this.socket && this.socket !== socket) {
+      this.socket.disconnect(true);
     }
+    this.socket = socket;
   }
 }
 
