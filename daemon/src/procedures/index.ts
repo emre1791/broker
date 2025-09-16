@@ -15,6 +15,7 @@ type MapProcedureOutputs<T extends readonly Procedure[]> = {
 
 export type ProcedureInputs = MapProcedureInputs<typeof procedures>;
 export type ProcedureOutputs = MapProcedureOutputs<typeof procedures>;
+export type ProcedureName = keyof ProcedureInputs;
 
 export const procedures = [
   AuthLogin,
