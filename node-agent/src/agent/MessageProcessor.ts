@@ -1,8 +1,8 @@
-import { Message } from '../../daemon/src';
+import { Message } from '../../../daemon/src';
 import { AckStore } from './AckStore';
-import { Client } from './Client';
-import { MESSAGE_REPLY_TYPE } from './consts';
-import { Logger } from './Logger';
+import { NodeAgent } from '.';
+import { MESSAGE_REPLY_TYPE } from '../consts';
+import { Logger } from '../Logger';
 
 type MessageCallback = (message: Message) => void;
 
@@ -12,9 +12,9 @@ export class MessageProcessor {
 
   private readonly bindings = new Map<string, Array<MessageCallback>>();
 
-  constructor(public readonly client: Client) {
-    this.logger = client.logger;
-    this.ackStore = client.ackStore;
+  constructor(public readonly agent: NodeAgent) {
+    this.logger = agent.logger;
+    this.ackStore = agent.ackStore;
   }
 
   processMessages(messages: Message[]) {

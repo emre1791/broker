@@ -1,1 +1,1 @@
-export { Client as BrokerClient } from './Client';
+export { NodeAgent } from './agent';

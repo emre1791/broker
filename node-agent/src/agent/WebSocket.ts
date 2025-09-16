@@ -1,8 +1,8 @@
 import { io, Socket } from 'socket.io-client';
-import type { Client } from './Client';
+import type { NodeAgent } from '.';
 import type { Transport } from './Transport';
-import { Logger } from './Logger';
-import { ProcedureInputs, ProcedureName, ProcedureOutputs } from '../../daemon/src';
+import { Logger } from '../Logger';
+import { ProcedureInputs, ProcedureName, ProcedureOutputs } from '../../../daemon/src';
 
 type Ack<T> = { ok: true; result: T } | { ok: false; message: string };
 
@@ -15,10 +15,10 @@ export class WebSocket {
   private socket: Socket | null = null;
   private stopped = false;
 
-  constructor(public readonly client: Client) {
-    this.wsUrl = client.transport.baseUrl.replace(/^http/, 'ws');
-    this.logger = client.logger;
-    this.transport = client.transport;
+  constructor(public readonly agent: NodeAgent) {
+    this.wsUrl = agent.transport.baseUrl.replace(/^http/, 'ws');
+    this.logger = agent.logger;
+    this.transport = agent.transport;
   }
 
   async connect() {

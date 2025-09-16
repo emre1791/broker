@@ -1,5 +1,5 @@
 import { AckStore } from './AckStore';
-import { Client } from './Client';
+import { NodeAgent } from '.';
 import { MessageProcessor } from './MessageProcessor';
 import { Transport } from './Transport';
 
@@ -10,10 +10,10 @@ export class Poller {
 
   private interval: NodeJS.Timeout | null = null;
 
-  constructor(public readonly client: Client) {
-    this.transport = client.transport;
-    this.ackStore = client.ackStore;
-    this.messageProcessor = client.messageProcessor;
+  constructor(public readonly agent: NodeAgent) {
+    this.transport = agent.transport;
+    this.ackStore = agent.ackStore;
+    this.messageProcessor = agent.messageProcessor;
     this.start();
   }
 
@@ -26,7 +26,7 @@ export class Poller {
         this.messageProcessor.processMessages(response.messages);
       })
       .catch((err) => {
-        this.client.logger.error('Error while polling messages', err);
+        this.agent.logger.error('Error while polling messages', err);
         this.ackStore.pushToAck(ackMessageIds);
         return undefined;
       });

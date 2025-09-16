@@ -1,4 +1,4 @@
-import { Message } from '../../daemon/src';
+import { Message } from '../../../daemon/src';
 
 export class AckStore {
   private toAckQueue = new Array<string>();

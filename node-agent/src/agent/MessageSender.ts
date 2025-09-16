@@ -1,13 +1,13 @@
 import { v4 } from 'uuid';
-import { Client } from './Client';
+import { NodeAgent } from '.';
 import { WebSocket } from './WebSocket';
-import { Platform } from '../../daemon/src';
+import { Platform } from '../../../daemon/src';
 
 export class MessageSender {
   public readonly webSocket: WebSocket;
 
-  constructor(public readonly client: Client) {
-    this.webSocket = client.webSocket;
+  constructor(public readonly agent: NodeAgent) {
+    this.webSocket = agent.webSocket;
   }
 
   fire(type: string, platforms: Platform[], content: string): string {

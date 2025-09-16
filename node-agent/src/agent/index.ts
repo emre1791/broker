@@ -1,21 +1,21 @@
-import { DefaultLogger, Logger } from './Logger';
+import { DefaultLogger, Logger } from '../Logger';
 import { Transport } from './Transport';
 import { Poller } from './Poller';
 import { AckStore } from './AckStore';
 import { MessageProcessor } from './MessageProcessor';
-import { INVOKE_TIMEOUT } from './consts';
+import { INVOKE_TIMEOUT } from '../consts';
 import { MessageSender } from './MessageSender';
 import { WebSocket } from './WebSocket';
-import { Platform } from '../../daemon/src';
+import { Platform } from '../../../daemon/src';
 
-export interface ClientOptions {
+export interface NodeAgentOptions {
   url: string;
   token: string;
   room?: string | undefined;
   logger?: Logger;
 }
 
-export class Client {
+export class NodeAgent {
   public readonly room: string | undefined;
   public readonly baseUrl: string;
   public readonly token: string;
@@ -28,7 +28,7 @@ export class Client {
   public readonly poller: Poller;
   public readonly webSocket: WebSocket;
 
-  constructor(options: ClientOptions) {
+  constructor(options: NodeAgentOptions) {
     this.room = options.room;
     this.baseUrl = options.url;
     this.token = options.token;

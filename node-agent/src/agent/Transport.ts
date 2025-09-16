@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { ProcedureInputs, ProcedureOutputs, ProcedureName } from '../../daemon/src';
-import { Logger } from './Logger';
-import { Client } from './Client';
+import { ProcedureInputs, ProcedureOutputs, ProcedureName } from '../../../daemon/src';
+import { Logger } from '../Logger';
+import { NodeAgent } from '.';
 
 export class Transport {
   public readonly room: string | undefined;
@@ -12,11 +12,11 @@ export class Transport {
 
   private sessionId: string | undefined;
 
-  constructor(public readonly client: Client) {
-    this.room = client.room;
-    this.baseUrl = client.baseUrl;
-    this.token = client.token;
-    this.logger = client.logger;
+  constructor(public readonly agent: NodeAgent) {
+    this.room = agent.room;
+    this.baseUrl = agent.baseUrl;
+    this.token = agent.token;
+    this.logger = agent.logger;
   }
 
   private async obtainSession() {
