@@ -4,8 +4,8 @@ import { Platform } from './Platform';
 export type Message = z.infer<typeof IncompleteMessage> & {
   senderShortId: string;
   id: string;
+  replyingMessageId?: string;
   room: string | undefined;
-  replyContent?: string;
   timeout: number;
 };
 

@@ -1,9 +1,9 @@
 import z from 'zod';
-import { createSessionProcedure, Procedure } from '../types/Procedure';
-import { IncompleteMessage, MessageReply } from '../types/Message';
+import { createSessionProcedure } from '../types/Procedure';
+import { IncompleteMessage, Message, MessageReply } from '../types/Message';
 import { messages, sessions } from '../registry/registry';
 import { v4 } from 'uuid';
-import { MESSAGE_TIMEOUT } from '../consts';
+import { MESSAGE_REPLY_TYPE, MESSAGE_TIMEOUT } from '../consts';
 
 export type MessagesPushResponse = void;
 
@@ -16,27 +16,49 @@ export const MessagesPush = createSessionProcedure(
   '/messages/push',
   MessagesPushRequest,
   async (input, session): Promise<MessagesPushResponse> => {
-    const newMessages = input.messages.map((incompleteMessage) => ({
-      ...incompleteMessage,
-      senderShortId: session.shortId,
-      id: v4(),
-      timeout: MESSAGE_TIMEOUT + Date.now(),
-      room: session.room,
-    }));
+    const newMessages: Message[] = [];
 
-    // push new messages before adding replies
-    messages.push(...newMessages);
-
-    for (const reply of input.replies) {
-      const originalMessage = messages.find((m) => m.id === reply.messageId);
-      if (originalMessage) {
-        originalMessage.replyContent = reply.content;
-        newMessages.push(originalMessage);
-      }
+    // add new messages
+    for (const incompleteMessage of input.messages) {
+      const message: Message = {
+        ...incompleteMessage,
+        senderShortId: session.shortId,
+        id: v4(),
+        timeout: MESSAGE_TIMEOUT + Date.now(),
+        room: session.room,
+      };
+      messages.push(message);
+      newMessages.push(message);
     }
-
     for (const session of sessions) {
       session.addMessages(newMessages);
+    }
+
+    // add new reply messages
+    for (const reply of input.replies) {
+      const originalMessage = messages.find((m) => m.id === reply.messageId);
+      if (originalMessage === undefined) {
+        continue;
+      }
+
+      const originalMessageSender = sessions.find(
+        (s) => s.shortId === originalMessage.senderShortId
+      );
+      if (originalMessageSender === undefined) {
+        continue;
+      }
+
+      const message: Message = {
+        id: v4(),
+        type: MESSAGE_REPLY_TYPE,
+        content: reply.content,
+        senderShortId: session.shortId,
+        room: session.room,
+        replyingMessageId: originalMessage.id,
+        platforms: originalMessageSender.platforms,
+        timeout: MESSAGE_TIMEOUT + Date.now(),
+      };
+      originalMessageSender.addMessages([message]);
     }
   }
 );
