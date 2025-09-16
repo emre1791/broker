@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { Config } from '../types/Config';
 import { createHttpApp } from './createHttpApp';
+import { listenExpirations } from '../registry/listenExpirations';
 
 export function createBroker(config: Config) {
   const app = createHttpApp(config);
@@ -12,5 +13,11 @@ export function createBroker(config: Config) {
     }
   });
 
-  return { app, server };
+  const unlistenExpirations = listenExpirations();
+  const destroy = () => {
+    server.close();
+    unlistenExpirations();
+  };
+
+  return { app, server, unlistenExpirations, destroy };
 }
