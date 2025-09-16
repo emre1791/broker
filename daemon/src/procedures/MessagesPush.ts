@@ -1,5 +1,5 @@
 import z from 'zod';
-import { Procedure } from '../types/Procedure';
+import { createSessionProcedure, Procedure } from '../types/Procedure';
 import { IncompleteMessage, MessageReply } from '../types/Message';
 import { messages, sessions } from '../registry/registry';
 import { v4 } from 'uuid';
@@ -12,10 +12,10 @@ export const MessagesPushRequest = z.object({
   replies: z.array(MessageReply),
 });
 
-export const MessagesPush: Procedure<z.infer<typeof MessagesPushRequest>, MessagesPushResponse> = {
-  path: '/messages/push',
-  inputSchema: MessagesPushRequest,
-  async handlerForSession(input, session) {
+export const MessagesPush = createSessionProcedure(
+  '/messages/push',
+  MessagesPushRequest,
+  async (input, session): Promise<MessagesPushResponse> => {
     const newMessages = input.messages.map((incompleteMessage) => ({
       ...incompleteMessage,
       senderShortId: session.shortId,
@@ -38,5 +38,5 @@ export const MessagesPush: Procedure<z.infer<typeof MessagesPushRequest>, Messag
     for (const session of sessions) {
       session.addMessages(newMessages);
     }
-  },
-};
+  }
+);

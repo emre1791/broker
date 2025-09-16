@@ -1,6 +1,6 @@
 import z from 'zod';
 import { Message } from '../types/Message';
-import { Procedure } from '../types/Procedure';
+import { createSessionProcedure, Procedure } from '../types/Procedure';
 import { POLL_KEEPALIVE_TIMEOUT } from '../consts';
 
 export interface MessagesPollResponse {
@@ -12,10 +12,10 @@ export const MessagesPollRequest = z.object({
   longPolling: z.boolean().optional(),
 });
 
-export const MessagesPoll: Procedure<z.infer<typeof MessagesPollRequest>, MessagesPollResponse> = {
-  path: '/messages/poll',
-  inputSchema: MessagesPollRequest,
-  async handlerForSession(input, session) {
+export const MessagesPoll = createSessionProcedure(
+  '/messages/poll',
+  MessagesPollRequest,
+  async (input, session): Promise<MessagesPollResponse> => {
     if (input.ackMessageIds) {
       session.ackMessages(input.ackMessageIds);
     }
@@ -26,5 +26,5 @@ export const MessagesPoll: Procedure<z.infer<typeof MessagesPollRequest>, Messag
       const messages = session.getMessages();
       return { messages };
     }
-  },
-};
+  }
+);
