@@ -1,15 +1,8 @@
-import z from 'zod';
 import { Config } from '../types/Config';
 import { Procedure } from '../types/Procedure';
 import express from 'express';
 import { sessionById } from '../registry/registry';
-
-const header = z.string().min(1).max(1024);
-const getHeader = (req: express.Request, name: string) => {
-  const value = req.headers[name];
-  const parseResult = header.safeParse(value);
-  return parseResult.success ? parseResult.data : undefined;
-};
+import { getHeader } from './getHeader';
 
 export function createHttpProcedureHandler(config: Config, procedure: Procedure) {
   if ('handlerForApiToken' in procedure) {

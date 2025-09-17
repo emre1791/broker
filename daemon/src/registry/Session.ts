@@ -4,6 +4,7 @@ import { Platform } from '../types/Platform';
 import { SESSION_TIMEOUT } from '../consts';
 import { sessionById, sessions } from './registry';
 import { Socket } from 'socket.io';
+import express from 'express';
 
 interface MessageCallback {
   callback: (messages: Message[]) => void;
@@ -18,6 +19,7 @@ export class Session {
   private unreadMessages: Message[] = [];
   private messageCallbacks: MessageCallback[] = [];
   private socket: Socket | null = null;
+  private streamResponse: express.Response | null = null;
 
   constructor(public readonly platforms: Platform[], public readonly room: string | undefined) {
     sessions.push(this);
@@ -114,7 +116,11 @@ export class Session {
   }
 
   isTimedOut(): boolean {
-    return Date.now() > this.timeout && (this.socket === null || !this.socket.connected);
+    return (
+      Date.now() > this.timeout &&
+      (this.socket === null || !this.socket.connected) &&
+      (this.streamResponse === null || this.streamResponse.writableEnded)
+    );
   }
 
   expire() {
@@ -130,6 +136,13 @@ export class Session {
       this.socket.disconnect(true);
     }
     this.socket = socket;
+  }
+
+  setStreamResponse(streamResponse: express.Response | null) {
+    if (this.streamResponse && this.streamResponse !== streamResponse) {
+      this.streamResponse.end();
+    }
+    this.streamResponse = streamResponse;
   }
 }
 
