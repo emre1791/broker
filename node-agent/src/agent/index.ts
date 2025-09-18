@@ -36,10 +36,10 @@ export class NodeAgent {
 
     this.transport = new Transport(this);
     this.ackStore = new AckStore();
-    this.messageProcessor = new MessageProcessor(this);
-    this.messageSender = new MessageSender(this);
     this.poller = new Poller(this);
     this.webSocket = new WebSocket(this);
+    this.messageProcessor = new MessageProcessor(this);
+    this.messageSender = new MessageSender(this);
   }
 
   fire(type: string, platforms: Platform[], content: string) {

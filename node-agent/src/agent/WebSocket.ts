@@ -2,7 +2,7 @@ import { io, Socket } from 'socket.io-client';
 import type { NodeAgent } from '.';
 import type { Transport } from './Transport';
 import { Logger } from '../Logger';
-import { ProcedureInputs, ProcedureName, ProcedureOutputs } from '../../../daemon/src';
+import { Message, ProcedureInputs, ProcedureName, ProcedureOutputs } from '../../../daemon/src';
 
 type Ack<T> = { ok: true; result: T } | { ok: false; message: string };
 
@@ -43,6 +43,13 @@ export class WebSocket {
             cb({});
           });
       },
+    });
+
+    socket.on('NEW_MESSAGES', (messages: Message[]) => {
+      for (const message of messages) {
+        this.logger.verbose('WS new message', message);
+      }
+      this.agent.messageProcessor.processMessages(messages);
     });
 
     socket.on('disconnect', (reason) => {

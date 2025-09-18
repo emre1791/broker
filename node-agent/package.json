@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "watch": "ts-node-dev --respawn --transpile-only src/test.ts"
   },
   "keywords": [
     "broker",
@@ -13,7 +14,7 @@
     "client",
     "pubsub"
   ],
-  "author": "",
+  "author": "Emre Aksoy",
   "license": "MIT",
   "files": [
     "dist"
@@ -21,11 +22,14 @@
   "dependencies": {
     "axios": "^1.12.2",
     "socket.io-client": "^4.8.1",
-    "uuid": "^13.0.0",
+    "uuid": "^7.0.3",
     "zod": "^4.1.8"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0"
+  }
 }

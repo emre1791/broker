@@ -39,9 +39,9 @@ export function createHttpWebStreamHandler(req: express.Request, res: express.Re
   };
 
   session.bindToMessages(onMessages);
+  session.setStreamResponse(res);
 
   const cleanup = () => {
-    console.log('WebStream connection closed');
     clearInterval(heartbeatInterval);
     session.unbindFromMessages(onMessages);
     res.end();

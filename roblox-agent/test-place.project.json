@@ -1,0 +1,27 @@
+{
+  "name": "your-project-name",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "node_modules": {
+        "$className": "Folder",
+        "@rbxts": {
+          "$path": "node_modules/@rbxts"
+        }
+      },
+      "include": {
+        "$path": "include"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterCharacterScripts": {
+        "$className": "StarterCharacterScripts",
+        "Broker": {
+          "$path": "out"
+        }
+      }
+    }
+  }
+}

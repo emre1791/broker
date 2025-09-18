@@ -9,6 +9,9 @@ export type Message = z.infer<typeof IncompleteMessage> & {
   timeout: number;
 };
 
+export type MessageReply = z.infer<typeof MessageReply>;
+export type IncompleteMessage = z.infer<typeof IncompleteMessage>;
+
 export const IncompleteMessage = z.object({
   platforms: z.array(Platform),
   id: z.uuid({ version: 'v4' }).optional(),

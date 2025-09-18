@@ -1,0 +1,35 @@
+{
+  "name": "@rbxts/roblox-agent",
+  "version": "1.0.0",
+  "main": "out/init.lua",
+  "scripts": {
+    "build": "rbxtsc",
+    "watch": "concurrently \"rbxtsc -w --type game --rojo test-place.project.json\" \"rojo serve test-place.project.json\"",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [],
+  "author": "Emre Aksoy",
+  "license": "ISC",
+  "description": "",
+  "types": "out/index.d.ts",
+  "files": [
+    "out",
+    "!**/*.tsbuildinfo"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@rbxts/compiler-types": "^3.0.0-types.0",
+    "@rbxts/types": "^1.0.881",
+    "concurrently": "^9.2.1",
+    "roblox-ts": "^3.0.0",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@rbxts/hashlib": "^1.0.1",
+    "@rbxts/services": "^1.5.5",
+    "@rbxts/signal": "^1.1.1",
+    "@rbxts/t": "^3.2.1"
+  }
+}

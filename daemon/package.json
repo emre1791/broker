@@ -15,7 +15,7 @@
     "long-polling",
     "pubsub"
   ],
-  "author": "",
+  "author": "Emre Aksoy",
   "license": "MIT",
   "files": [
     "dist"

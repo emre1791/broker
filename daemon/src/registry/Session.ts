@@ -48,6 +48,7 @@ export class Session {
     if (!hasMessages || !once) {
       this.messageCallbacks.push({ callback, once });
     }
+    return () => this.unbindFromMessages(callback);
   }
 
   unbindFromMessages(callback: (messages: Message[]) => void) {
@@ -71,6 +72,7 @@ export class Session {
     const messagesFiltered = messages.filter((message) => {
       return this.canReceive(message) && filterTimeout(message);
     });
+    console.log('Session', this.shortId, 'can receive', messagesFiltered.length, 'messages');
     if (messagesFiltered.length === 0) {
       return;
     }

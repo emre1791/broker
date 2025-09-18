@@ -44,6 +44,14 @@ export function createWsApp(server: Server) {
     for (const procedure of procedures) {
       createWsProcedureHandler(socket, session, procedure);
     }
+
+    const unbind = session.bindToMessages((messages) => {
+      socket.emit('NEW_MESSAGES', messages);
+    });
+
+    socket.on('disconnect', () => {
+      unbind();
+    });
   });
 
   return io;
